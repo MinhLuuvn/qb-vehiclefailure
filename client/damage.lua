@@ -39,7 +39,7 @@ end)
 
 RegisterNetEvent('qb-vehiclehandler:client:EjectPlayer', function(velocity, difference)
     if not vehData.harness then
-        if not vehData.seatbelt or vehData.seatbelt and difference >= Config.Triggers.speed.override or vehData.seatbelt and difference >= Config.Triggers.speed.override then
+        if not vehData.seatbelt or vehData.seatbelt and difference >= Config.Triggers.speed.override then
             local ped = PlayerPedId()
             local co = GetEntityCoords(ped)
             local fw = getForwardVec(ped)
