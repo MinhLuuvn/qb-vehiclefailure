@@ -12,7 +12,7 @@
 
 # Installation
 1. **Delete old `qb-vehiclefailure`**
-2. **Delete `seatbelt.lua` located in qb-smallresources/client**
+2. **Delete `seatbelt.lua` located in *qb-smallresources/client***
 3. **If necessary, update `exports['qb-smallresources']:HasHarness()`**
 
 ## Update Export
