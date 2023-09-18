@@ -29,7 +29,7 @@ RegisterNetEvent('qb-vehiclehandler:client:adminRepair', function()
         SetVehicleDeformationFixed(vehData.ref)
         SetVehicleEngineHealth(vehData.ref, 1000)
         SetVehicleFixed(vehData.ref)
-        Entity(vehData.ref).state.fuel = 100.0
+        SetVehicleFuelLevel(vehData.ref, 100.0)
         SetVehicleEngineOn(vehData.ref, true, true)
         healthBodyLast = 1000.0
         healthEngineLast = 1000.0
