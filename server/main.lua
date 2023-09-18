@@ -27,15 +27,15 @@ RegisterNetEvent('qb-vehiclehandler:server:deductHarnessUse', function(item)
 
     if Config.Inventory == 'ox' then
         if not item.metadata.uses then
-            harness.metadata.uses = 19
-            harness.metadata.description = "Uses: "..harness.metadata.uses
-            exports.ox_inventory:SetMetadata(src, harness.slot, harness.metadata)
-        elseif harness.metadata.uses == 1 then
+            item.metadata.uses = 19
+            item.metadata.description = "Uses: "..item.metadata.uses
+            exports.ox_inventory:SetMetadata(src, item.slot, item.metadata)
+        elseif item.metadata.uses == 1 then
             exports.ox_inventory:RemoveItem(src, 'harness', 1)
         else
-            harness.metadata.uses -= 1
-            harness.metadata.description = "Uses: "..harness.metadata.uses
-            exports.ox_inventory:SetMetadata(src, harness.slot, harness.metadata)
+            item.metadata.uses -= 1
+            item.metadata.description = "Uses: "..item.metadata.uses
+            exports.ox_inventory:SetMetadata(src, item.slot, item.metadata)
         end
     elseif Config.Inventory == 'qb' then
         local Player = QBCore.Functions.GetPlayer(src)
