@@ -2,6 +2,7 @@
 - More realistic vehicle damage
 - Seatbelt & harness functionality
 - Tire loss and ejection on impact
+- Prevent vehicle control while airborne/flipped
 
 # Dependencies
 * [qbcore](https://github.com/qbcore-framework)
@@ -13,7 +14,8 @@
 # Installation
 1. **Delete old `qb-vehiclefailure`**
 2. **Delete `seatbelt.lua` located in *qb-smallresources/client***
-3. **If necessary, update `exports['qb-smallresources']:HasHarness()`**
+3. **Place `qb-vehiclehandler` inside of `[qb]` folder**
+4. **If necessary, update `exports['qb-smallresources']:HasHarness()`**
 
 ## Update Export
 - **Replace export on line 80 in *ps-hud/client.lua*** 
