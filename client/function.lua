@@ -51,7 +51,7 @@ function fscale(inputValue, originalMin, originalMax, newBegin, newEnd, curve)
     return rangedValue
 end
 
-local function IsBackEngine(vehModel)
+function IsBackEngine(vehModel)
     if Config.BackEngine[vehModel] then return true else return false end
 end
 
