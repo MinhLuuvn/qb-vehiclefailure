@@ -58,26 +58,45 @@ end
 function CleanVehicle(veh)
     local ped = PlayerPedId()
     TaskStartScenarioInPlace(ped, "WORLD_HUMAN_MAID_CLEAN", 0, true)
-
-    if lib.progressCircle({
-        label = Lang:t("progress.clean_veh"),
-        duration = math.random(10000, 20000),
-        position = 'bottom',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            car = true,
-        },
-    }) then
-        SetVehicleDirtLevel(veh, 0.1)
-        SetVehicleUndriveable(veh, false)
-        WashDecalsFromVehicle(veh, 1.0)
-        TriggerServerEvent('qb-vehiclehandler:server:removewashingkit', veh)
-        ClearAllPedProps(ped)
-        ClearPedTasks(ped)
-    else 
-        ClearAllPedProps(ped)
-        ClearPedTasks(ped)
+    
+    if Config.Progress == 'ox' then
+        if lib.progressCircle({
+            label = "Cleaning vehicle",
+            duration = math.random(10000, 20000),
+            position = 'bottom',
+            useWhileDead = false,
+            canCancel = true,
+            disable = {
+                car = true,
+            },
+        }) then
+            SetVehicleDirtLevel(veh, 0.1)
+            SetVehicleUndriveable(veh, false)
+            WashDecalsFromVehicle(veh, 1.0)
+            TriggerServerEvent('qb-vehiclehandler:server:removewashingkit', veh)
+            ClearAllPedProps(ped)
+            ClearPedTasks(ped)
+        else 
+            ClearAllPedProps(ped)
+            ClearPedTasks(ped)
+        end
+    elseif Config.Progress == 'qb' then
+        QBCore.Functions.Progressbar("Cleaning vehicle", "Attaching Harness", math.random(10000, 20000), false, true, {
+            disableMovement = false,
+            disableCarMovement = false,
+            disableMouse = false,
+            disableCombat = true,
+        }, {}, {}, {}, function() -- Done
+            SetVehicleDirtLevel(veh, 0.1)
+            SetVehicleUndriveable(veh, false)
+            WashDecalsFromVehicle(veh, 1.0)
+            TriggerServerEvent('qb-vehiclehandler:server:removewashingkit', veh)
+            ClearAllPedProps(ped)
+            ClearPedTasks(ped)
+        end, function() -- Cancel
+            ClearAllPedProps(ped)
+            ClearPedTasks(ped)
+        end)
     end
 end
 
@@ -88,40 +107,74 @@ function RepairVehicleFull(veh)
         SetVehicleDoorOpen(veh, 4, false, false)
     end
 
-    if lib.progressCircle({
-        label = Lang:t("progress.repair_veh"),
-        duration = math.random(20000, 30000),
-        position = 'bottom',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            car = true,
-        },
-        anim = {
-            dict = "mini@repair",
-            clip = "fixing_a_player"
-        },
-    }) then
-        StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
-        SetVehicleEngineHealth(veh, 1000.0)
-        SetVehicleEngineOn(veh, true, false)
-        for i = 0, 5 do
-            SetVehicleTyreFixed(veh, i)
-            TriggerEvent('qb-vehiclehandler:client:TyreSync', veh, i)
+    if Config.Progress == 'ox' then
+        if lib.progressCircle({
+            label = "Repairing vehicle",
+            duration = math.random(15000, 20000),
+            position = 'bottom',
+            useWhileDead = false,
+            canCancel = true,
+            disable = {
+                car = true,
+            },
+            anim = {
+                dict = "mini@repair",
+                clip = "fixing_a_player"
+            },
+        }) then
+            StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
+            SetVehicleEngineHealth(veh, 1000.0)
+            SetVehicleEngineOn(veh, true, false)
+            for i = 0, 5 do
+                SetVehicleTyreFixed(veh, i)
+                TriggerEvent('qb-vehiclehandler:client:TyreSync', veh, i)
+            end
+            if (IsBackEngine(GetEntityModel(veh))) then
+                SetVehicleDoorShut(veh, 5, false)
+            else
+                SetVehicleDoorShut(veh, 4, false)
+            end
+            TriggerServerEvent('qb-vehiclehandler:removeItem', "advancedrepairkit")
+        else 
+            StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
+            if (IsBackEngine(GetEntityModel(veh))) then
+                SetVehicleDoorShut(veh, 5, false)
+            else
+                SetVehicleDoorShut(veh, 4, false)
+            end
         end
-        if (IsBackEngine(GetEntityModel(veh))) then
-            SetVehicleDoorShut(veh, 5, false)
-        else
-            SetVehicleDoorShut(veh, 4, false)
-        end
-        TriggerServerEvent('qb-vehiclehandler:removeItem', "advancedrepairkit")
-    else 
-        StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
-        if (IsBackEngine(GetEntityModel(veh))) then
-            SetVehicleDoorShut(veh, 5, false)
-        else
-            SetVehicleDoorShut(veh, 4, false)
-        end
+    elseif Config.Progress == 'qb' or Config.Progress == 'none' then
+        QBCore.Functions.Progressbar('vehicle_repair_full', "Repairing vehicle", math.random(15000, 20000), false, false, {
+            disableMovement = true,
+            disableCarMovement = false,
+            disableMouse = false,
+            disableCombat = true
+        }, {
+            animDict = "mini@repair",
+            anim = "fixing_a_player",
+            flags = 16,
+        }, {}, {}, function() -- Done
+            StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
+            SetVehicleEngineHealth(veh, 1000.0)
+            SetVehicleEngineOn(veh, true, false)
+            for i = 0, 5 do
+                SetVehicleTyreFixed(veh, i)
+                TriggerEvent('qb-vehiclehandler:client:TyreSync', veh, i)
+            end
+            if (IsBackEngine(GetEntityModel(veh))) then
+                SetVehicleDoorShut(veh, 5, false)
+            else
+                SetVehicleDoorShut(veh, 4, false)
+            end
+            TriggerServerEvent('qb-vehiclehandler:removeItem', "advancedrepairkit")
+        end, function() -- Cancel
+            StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
+            if (IsBackEngine(GetEntityModel(veh))) then
+                SetVehicleDoorShut(veh, 5, false)
+            else
+                SetVehicleDoorShut(veh, 4, false)
+            end
+        end)
     end
 end
 
@@ -132,39 +185,73 @@ function RepairVehicle(veh)
         SetVehicleDoorOpen(veh, 4, false, false)
     end
 
-    if lib.progressCircle({
-        label = Lang:t("progress.repair_veh"),
-        duration = math.random(10000, 20000),
-        position = 'bottom',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            car = true,
-        },
-        anim = {
-            dict = "mini@repair",
-            clip = "fixing_a_player"
-        },
-    }) then
-        StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
-        SetVehicleEngineHealth(veh, 500.0)
-        SetVehicleEngineOn(veh, true, false)
-        for i = 0, 5 do
-            SetVehicleTyreFixed(veh, i)
-            TriggerEvent('qb-vehiclehandler:client:TyreSync', veh, i)
+    if Config.Progress == 'ox' then
+        if lib.progressCircle({
+            label = "Repairing vehicle",
+            duration = math.random(15000, 20000),
+            position = 'bottom',
+            useWhileDead = false,
+            canCancel = true,
+            disable = {
+                car = true,
+            },
+            anim = {
+                dict = "mini@repair",
+                clip = "fixing_a_player"
+            },
+        }) then
+            StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
+            SetVehicleEngineHealth(veh, 500.0)
+            SetVehicleEngineOn(veh, true, false)
+            for i = 0, 5 do
+                SetVehicleTyreFixed(veh, i)
+                TriggerEvent('qb-vehiclehandler:client:TyreSync', veh, i)
+            end
+            if (IsBackEngine(GetEntityModel(veh))) then
+                SetVehicleDoorShut(veh, 5, false)
+            else
+                SetVehicleDoorShut(veh, 4, false)
+            end
+            TriggerServerEvent('qb-vehiclehandler:removeItem', "repairkit")
+        else 
+            StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
+            if (IsBackEngine(GetEntityModel(veh))) then
+                SetVehicleDoorShut(veh, 5, false)
+            else
+                SetVehicleDoorShut(veh, 4, false)
+            end
         end
-        if (IsBackEngine(GetEntityModel(veh))) then
-            SetVehicleDoorShut(veh, 5, false)
-        else
-            SetVehicleDoorShut(veh, 4, false)
-        end
-        TriggerServerEvent('qb-vehiclehandler:removeItem', "repairkit")
-    else 
-        StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
-        if (IsBackEngine(GetEntityModel(veh))) then
-            SetVehicleDoorShut(veh, 5, false)
-        else
-            SetVehicleDoorShut(veh, 4, false)
-        end
+    elseif Config.Progress == 'qb' or Config.Progress == 'none' then
+        QBCore.Functions.Progressbar('vehicle_repair', "Repairing vehicle", math.random(15000, 20000), false, false, {
+            disableMovement = true,
+            disableCarMovement = false,
+            disableMouse = false,
+            disableCombat = true
+        }, {
+            animDict = "mini@repair",
+            anim = "fixing_a_player",
+            flags = 16,
+        }, {}, {}, function() -- Done
+            StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
+            SetVehicleEngineHealth(veh, 500.0)
+            SetVehicleEngineOn(veh, true, false)
+            for i = 0, 5 do
+                SetVehicleTyreFixed(veh, i)
+                TriggerEvent('qb-vehiclehandler:client:TyreSync', veh, i)
+            end
+            if (IsBackEngine(GetEntityModel(veh))) then
+                SetVehicleDoorShut(veh, 5, false)
+            else
+                SetVehicleDoorShut(veh, 4, false)
+            end
+            TriggerServerEvent('qb-vehiclehandler:removeItem', "repairkit")
+        end, function() -- Cancel
+            StopAnimTask(PlayerPedId(), "mini@repair", "fixing_a_player", 1.0)
+            if (IsBackEngine(GetEntityModel(veh))) then
+                SetVehicleDoorShut(veh, 5, false)
+            else
+                SetVehicleDoorShut(veh, 4, false)
+            end
+        end)
     end
 end
