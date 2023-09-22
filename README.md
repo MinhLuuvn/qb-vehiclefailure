@@ -3,6 +3,7 @@
 - Seatbelt & harness functionality
 - Tire loss and ejection on impact
 - Prevent vehicle control while airborne/flipped
+- No random ejections due to desync between clients
 
 # Dependencies
 * [qbcore](https://github.com/qbcore-framework)
