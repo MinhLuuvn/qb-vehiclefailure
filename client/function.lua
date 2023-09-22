@@ -97,6 +97,13 @@ function CleanVehicle(veh)
             ClearAllPedProps(ped)
             ClearPedTasks(ped)
         end)
+    elseif Config.Progress == 'none' then
+        SetVehicleDirtLevel(veh, 0.1)
+        SetVehicleUndriveable(veh, false)
+        WashDecalsFromVehicle(veh, 1.0)
+        TriggerServerEvent('qb-vehiclehandler:server:removewashingkit', veh)
+        ClearAllPedProps(ped)
+        ClearPedTasks(ped)
     end
 end
 
@@ -143,7 +150,7 @@ function RepairVehicleFull(veh)
                 SetVehicleDoorShut(veh, 4, false)
             end
         end
-    elseif Config.Progress == 'qb' or Config.Progress == 'none' then
+    elseif Config.Progress == 'qb' then
         QBCore.Functions.Progressbar('vehicle_repair_full', "Repairing vehicle", math.random(15000, 20000), false, false, {
             disableMovement = true,
             disableCarMovement = false,
@@ -175,6 +182,19 @@ function RepairVehicleFull(veh)
                 SetVehicleDoorShut(veh, 4, false)
             end
         end)
+    elseif Config.Progress == 'none' then
+        SetVehicleEngineHealth(veh, 1000.0)
+        SetVehicleEngineOn(veh, true, false)
+        for i = 0, 5 do
+            SetVehicleTyreFixed(veh, i)
+            TriggerEvent('qb-vehiclehandler:client:TyreSync', veh, i)
+        end
+        if (IsBackEngine(GetEntityModel(veh))) then
+            SetVehicleDoorShut(veh, 5, false)
+        else
+            SetVehicleDoorShut(veh, 4, false)
+        end
+        TriggerServerEvent('qb-vehiclehandler:removeItem', "advancedrepairkit")
     end
 end
 
@@ -221,7 +241,7 @@ function RepairVehicle(veh)
                 SetVehicleDoorShut(veh, 4, false)
             end
         end
-    elseif Config.Progress == 'qb' or Config.Progress == 'none' then
+    elseif Config.Progress == 'qb' then
         QBCore.Functions.Progressbar('vehicle_repair', "Repairing vehicle", math.random(15000, 20000), false, false, {
             disableMovement = true,
             disableCarMovement = false,
@@ -253,5 +273,18 @@ function RepairVehicle(veh)
                 SetVehicleDoorShut(veh, 4, false)
             end
         end)
+    elseif Config.Progress == 'none' then
+        SetVehicleEngineHealth(veh, 500.0)
+        SetVehicleEngineOn(veh, true, false)
+        for i = 0, 5 do
+            SetVehicleTyreFixed(veh, i)
+            TriggerEvent('qb-vehiclehandler:client:TyreSync', veh, i)
+        end
+        if (IsBackEngine(GetEntityModel(veh))) then
+            SetVehicleDoorShut(veh, 5, false)
+        else
+            SetVehicleDoorShut(veh, 4, false)
+        end
+        TriggerServerEvent('qb-vehiclehandler:removeItem', "repairkit")
     end
 end
