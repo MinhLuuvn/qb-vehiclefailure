@@ -6,10 +6,9 @@
 
 # Dependencies
 * [qbcore](https://github.com/qbcore-framework)
-* [qb-inventory](https://github.com/qbcore-framework/qb-inventory)  *(Optional)*
-* [progressbar](https://github.com/qbcore-framework/progressbar)    *(Optional)*
-* [ox_inventory](https://github.com/overextended/ox_inventory)      *(Optional)*
+* [ox_inventory](https://github.com/overextended/ox_inventory) or [qb-inventory](https://github.com/qbcore-framework/qb-inventory)
 * [ox_lib](https://github.com/overextended/ox_lib)                  *(Optional)*
+* [progressbar](https://github.com/qbcore-framework/progressbar)    *(Optional)*
 
 # Installation
 1. **Delete old `qb-vehiclefailure`**
