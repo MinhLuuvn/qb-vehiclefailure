@@ -1,8 +1,8 @@
 fx_version  'cerulean'
 game        'gta5'
 
-name        'qb-vehiclehandler'
-description 'QBCore - Vehicle Handler'
+name        'qb-vehiclefailure'
+description 'QBCore - Vehicle Failure+'
 version     '1.0.0'
 
 shared_scripts {
