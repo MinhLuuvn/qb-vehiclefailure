@@ -20,5 +20,5 @@
 ## Update Export
 - **Replace export on line 80 in *ps-hud/client.lua*** 
 ```lua
-exports['qb-vehiclehandler']:HasHarness()
+exports['qb-vehiclefailure']:HasHarness()
 ```
